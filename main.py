@@ -1,52 +1,50 @@
 import discord
-import time
 from discord import app_commands 
-import random
+from random import randint
+import time
 
-# https://github.com/Digiwind/Digiwind-Videos/blob/main/DPY%20Slash%20Commands.py for slash command template
+
 class aclient(discord.Client):
     def __init__(self):
-        super().__init__(intents = discord.Intents.default())
-        self.synced = False
+        super().__init__(intents = discord.Intents.all())
+        self.synced = False 
 
     async def on_ready(self):
         await self.wait_until_ready()
-        if not self.synced:
-            await tree.sync() 
+        if not self.synced: 
+            await tree.sync()
             self.synced = True
         print(f"We have logged in as {self.user}.")
 
 client = aclient()
 tree = app_commands.CommandTree(client)
 
-@tree.command(name = 'mines', description='mines game mode')
-async def mines(interaction: discord.Interaction, tile_amt: int, round_id : str):
+@tree.command(name = 'towers', description='towers gamemode')
+async def towers(interaction: discord.Interaction, round_id:str, tile_amount:int):
     if len(round_id) == 36:
         start_time = time.time()
-        grid = ['❌','❌','❌','❌','❌','❌','❌','❌','❌','❌','❌','❌','❌','❌','❌','❌','❌','❌','❌','❌','❌','❌','❌','❌','❌']
-        already_used = []
+        grid = [['❓','❓','❓'],['❓','❓','❓'],['❓','❓','❓'],['❓','❓','❓'],['❓','❓','❓'],['❓','❓','❓'],['❓','❓','❓'],['❓','❓','❓']]
 
         count = 0
-        while tile_amt > count:
-            a = random.randint(0, 24)
-            if a in already_used:
-                continue
-            already_used.append(a)
-            grid[a] = '✅'
+        while count < tile_amount:
+            a = randint(0,2)
+            grid[count][a] = '✅'
             count += 1
-        
-        chance = random.randint(45,95)
-        if tile_amt < 4:
-            chance = chance - 15
+
+        chance = randint(45,95)
+        if tile_amount < 4:
+                chance = chance - 15
 
         em = discord.Embed(color=0x0025ff)
-        em.add_field(name='Grid', value="\n" + "```"+grid[0]+grid[1]+grid[2]+grid[3]+grid[4]+"\n"+grid[5]+grid[6]+grid[7]+grid[8]+grid[9]+"\n"+grid[10]+grid[11]+grid[12]+grid[13]+grid[14]+"\n"+grid[15]+grid[16]+grid[17] \
-            +grid[18]+grid[19]+"\n"+grid[20]+grid[21]+grid[22]+grid[23]+grid[24] + "```\n" + f"**Accuracy**\n```{chance}%```\n**Round ID**\n```{round_id}```\n**Response Time:**\n```{str(int(time.time() - int(start_time)))}```")
-        em.set_footer(text='made by geek')
+        em.add_field(name="Grid", value="```"+grid[7][0]+grid[7][1]+grid[7][2]+"\n"+grid[6][0]+grid[6][1]+grid[6][2]+"\n"+grid[5][0]+grid[5][1]+grid[5][2]+"\n"+grid[4][0]+grid[4][1]+grid[4][2] +"\n"+ \
+            grid[3][0]+grid[3][1]+grid[3][2] + "\n" + grid[2][0]+grid[2][1]+grid[2][2] + "\n" + grid[1][0]+grid[1][1]+grid[1][2] + "\n" + grid[0][0]+grid[0][1]+grid[0][2] + "```" \
+                + f"**Accuracy**\n```{chance}%```\n**Round ID**\n```{round_id}```\n**Response Time:**\n```{str(int(time.time() - int(start_time)))}```")
+        
         await interaction.response.send_message(embed=em)
     else:
         em = discord.Embed(color=0xff0000)
         em.add_field(name='Error', value="Invalid round id")
         await interaction.response.send_message(embed=em)
 
-client.run('bot token')
+
+client.run('MTA2MDM2NTA2MTE2NTY5OTExMg.GrLL8Q.zLq2FtkwmZGRpCroRkdbRaWp1LY7hfzPghwFdE')
